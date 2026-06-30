@@ -2,6 +2,7 @@
 
 #include "vector.hpp"
 #include <functional>
+
 struct Object
 {
   using energy_t = double;
@@ -13,7 +14,7 @@ struct Object
   using friction_t = double;
   using lambda_t = std::function<bool(Object &)>;
 
-  mass_t mass;
+  mass_t mass{1};
   position_t position{0, 0};
   velocity_t velocity{0, 0};
   acceleration_t acceleration{0, 0};
