@@ -31,19 +31,31 @@ void Simulator::run(size_t ticks)
   auto &i = instance();
   while (ticks-- > 0)
   {
-    std::cout << i << std::endl;
 
+    std::cout << i << std::endl;
     for (auto &o : Simulator::m_objects)
     {
+      // Remove any forces that are no longer valid
+      std::erase_if(o.m_conditional_forces, [&](auto &pair)
+                    {
+                      auto &[force, stop_condition] = pair;
+                      if (stop_condition(o))
+                      {
+                        o.sigma_force -= force;
+                        return true;
+                      }
+                      return false;
+                    });
+
       o.acceleration = o.sigma_force / o.mass;
 
-      // 1. Keep track of the old velocity
+      // Keep track of the old velocity
       Vector old_velocity = o.velocity;
 
-      // 2. Update to the new velocity
+      // Update to the new velocity
       o.velocity += o.acceleration * consts::time_step;
 
-      // 3. Use the average of old and new velocity to update position
+      // Use the average of old and new velocity to update position
       o.position += (old_velocity + o.velocity) * 0.5 * consts::time_step;
     }
     Simulator::sleep(consts::time_step);

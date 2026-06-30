@@ -7,6 +7,7 @@ using position_t = Object::position_t;
 using velocity_t = Object::velocity_t;
 using acceleration_t = Object::acceleration_t;
 using force_t = Object::force_t;
+using friction_t = Object::friction_t;
 using lambda_t = Object::lambda_t;
 
 Object::Object(mass_t mass, const Vector &position, const Vector &velocity)
@@ -39,18 +40,20 @@ void Object::add_force(const Vector &force, lambda_t stop_condition)
   sigma_force += force;
 
   if (stop_condition)
-  {
-    while (!stop_condition(*this))
-      ;
-    sigma_force -= force;
-  }
+    m_conditional_forces.push_back({force, stop_condition});
 }
 
-void Object::add_friction(const force_t &friction)
+void Object::add_friction(const friction_t friction_mu)
 {
-  add_force(friction, [](const Object &o)
+  force_t friction_force = force_t(normal().y * friction_mu, 0);
+  add_force(friction_force, [](Object &o)
             {
-              return o.velocity.x <= 0;
+              if (o.velocity.x < 0)
+              {
+                o.velocity.x = 0; // reset velocity to 0
+                return true;
+              }
+              return false;
             });
 }
 
