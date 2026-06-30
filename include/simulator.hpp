@@ -1,0 +1,43 @@
+#pragma once
+
+#include "../include/object.hpp"
+#include <ostream>
+#include <vector>
+
+class Simulator
+{
+public:
+  Simulator(const Simulator &) = delete;
+  Simulator &operator=(const Simulator &) = delete;
+  Simulator(Simulator &&) = delete;
+  Simulator &operator=(Simulator &&) = delete;
+
+  // Global access point
+  static Simulator &instance();
+  static void add_object(const Object &object);
+  static void sleep(double seconds);
+  static void run(size_t ticks = 100);
+
+  friend std::ostream &operator<<(std::ostream &os, const Simulator &simulator)
+  {
+    size_t idx{1};
+    for (auto &o : simulator.m_objects)
+    {
+      os << "  Object " << idx++ << ":" << std::endl;
+      os << "    mass: " << o.mass << std::endl;
+      os << "    position: " << o.position << std::endl;
+      os << "    velocity: " << o.velocity << std::endl;
+      os << "    acceleration: " << o.acceleration << std::endl;
+      os << "    kinetic energy: " << o.kinetic_energy() << std::endl;
+      os << "    potential energy: " << o.potential_energy() << std::endl;
+      os << "    total energy: " << o.total_energy() << std::endl;
+    }
+    return os;
+  }
+
+private:
+  inline static std::vector<Object> m_objects;
+
+  Simulator() = default;
+  ~Simulator() = default;
+};
