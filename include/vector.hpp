@@ -12,11 +12,11 @@ struct Vector
 
   Vector operator+(const Vector &other) const;
   Vector &operator+=(const Vector &other);
-  Vector &operator+=(double scalar);
+  Vector &operator+=(double scalar) = delete;
 
   Vector operator-(const Vector &other) const;
   Vector &operator-=(const Vector &other);
-  Vector &operator-=(double scalar);
+  Vector &operator-=(double scalar) = delete;
 
   Vector operator*(double scalar) const;
   double operator*(const Vector &other) const;
