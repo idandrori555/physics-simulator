@@ -11,12 +11,12 @@ struct Vector
   static Vector from_polar(double size, double angle);
 
   Vector operator+(const Vector &other) const;
-  Vector operator+=(const Vector &other);
-  Vector operator+=(double scalar);
+  Vector &operator+=(const Vector &other);
+  Vector &operator+=(double scalar);
 
   Vector operator-(const Vector &other) const;
-  Vector operator-=(const Vector &other);
-  Vector operator-=(double scalar);
+  Vector &operator-=(const Vector &other);
+  Vector &operator-=(double scalar);
 
   Vector operator*(double scalar) const;
   double operator*(const Vector &other) const;

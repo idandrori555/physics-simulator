@@ -15,14 +15,14 @@ Vector Vector::operator+(const Vector &other) const
   return Vector(x + other.x, y + other.y);
 }
 
-Vector Vector::operator+=(const Vector &other)
+Vector &Vector::operator+=(const Vector &other)
 {
   x += other.x;
   y += other.y;
   return *this;
 }
 
-Vector Vector::operator+=(double scalar)
+Vector &Vector::operator+=(double scalar)
 {
   x += scalar;
   y += scalar;
@@ -34,14 +34,14 @@ Vector Vector::operator-(const Vector &other) const
   return Vector(x - other.x, y - other.y);
 }
 
-Vector Vector::operator-=(const Vector &other)
+Vector &Vector::operator-=(const Vector &other)
 {
   x -= other.x;
   y -= other.y;
   return *this;
 }
 
-Vector Vector::operator-=(double scalar)
+Vector &Vector::operator-=(double scalar)
 {
   x -= scalar;
   y -= scalar;

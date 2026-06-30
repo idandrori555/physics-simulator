@@ -29,7 +29,7 @@ struct Object
   energy_t potential_energy() const;
   energy_t total_energy() const;
 
-  void add_force(const Vector &force, [[maybe_unused]] lambda_t stop_condition = nullptr);
+  void add_force(const Vector &force, lambda_t stop_condition = nullptr);
   void add_friction(const friction_t friction_mu);
 
   Vector normal() const;
