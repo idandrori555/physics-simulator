@@ -21,7 +21,7 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Simulator &simulator)
   {
     size_t idx{1};
-    for (auto &o : simulator.m_objects)
+    for (const auto &o : simulator.m_objects)
     {
       os << "  Object " << idx++ << ":" << std::endl;
       os << "    mass: " << o.mass << std::endl;

@@ -2,11 +2,7 @@
 
 auto &instance = Simulator::instance();
 
-template <size_t EXAMPLE>
-auto example(void) -> void;
-
-template <>
-auto example<1>(void) -> void
+auto example_1(void) -> void
 {
   Object obj;
   obj.mass = 1;
@@ -16,8 +12,7 @@ auto example<1>(void) -> void
   instance.run();
 }
 
-template <>
-auto example<2>(void) -> void
+auto example_2(void) -> void
 {
   Object obj;
   obj.mass = 1;
@@ -30,6 +25,6 @@ auto example<2>(void) -> void
 
 int main(void)
 {
-  example<2>();
+  example_2();
   return 0;
 }
