@@ -45,7 +45,7 @@ void Object::add_force(const Vector &force, lambda_t stop_condition)
 
 void Object::add_friction(const friction_t friction_mu)
 {
-  force_t friction_force = force_t(normal().y * friction_mu, 0);
+  force_t friction_force = force_t(-1 * normal().y * friction_mu, 0);
   if (velocity.x < 0)
     friction_force.x *= -1;
 
