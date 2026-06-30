@@ -51,7 +51,7 @@ void Object::add_friction(const friction_t friction_mu)
 
   add_force(friction_force, [](Object &o)
             {
-              if (o.velocity.x < 0)
+              if (o.velocity.x <= 0)
               {
                 o.velocity.x = 0; // reset velocity to 0
                 return true;
