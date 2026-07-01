@@ -210,7 +210,8 @@ auto example_bouncing_ball(void) -> void
 
   Object ball;
   ball.mass = 1.0;
-  ball.position = Vector(max_x * 0.5, max_y * 0.8); // Drop from high up
+  ball.position = Vector(max_x * 0.2, max_y * 0.8); // Drop from high up
+  ball.velocity = Vector(2.0, 0.0);                 // Slight horizontal push
   ball.add_gravity();
 
   instance.add_object(ball);
