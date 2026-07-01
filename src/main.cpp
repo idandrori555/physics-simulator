@@ -50,7 +50,7 @@ auto example_parabolic_arc(void) -> void
   Object obj;
   obj.mass = 1.0;
   obj.position = Vector(max_x * 0.05, max_y * 0.03);
-  obj.velocity = Vector(18.0, 24.0);
+  obj.velocity = Vector(12.0, 16.0);
   obj.add_gravity();
 
   instance.add_object(obj);
@@ -172,14 +172,14 @@ auto example_circular_motion(void) -> void
   double center_y = max_y * 0.5;
   double radius = 8.0; // 8 meters orbital radius
 
-  // 1. Position the object at the top of the orbit arc
+  // Position the object at the top of the orbit arc
   satellite.position = Vector(center_x, center_y + radius);
 
-  // 2. Give it a perpendicular tangential velocity (moving rightward)
+  // Give it a perpendicular tangential velocity (moving rightward)
   double speed = 12.0; // Tangential speed in m/s
   satellite.velocity = Vector(speed, 0.0);
 
-  // 3. Apply a dynamic frame-by-frame centripetal force using a conditional force
+  // Apply a dynamic frame-by-frame centripetal force using a conditional force
   double dynamic_force_mag = (satellite.mass * speed * speed) / radius;
 
   satellite.add_force(

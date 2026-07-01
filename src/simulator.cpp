@@ -62,10 +62,10 @@ void Simulator::run(void)
       o.velocity += o.acceleration * consts::time_step;
       o.position += (old_velocity + o.velocity) * 0.5 * consts::time_step;
 
-      // GROUND COLLISION RESOLUTION
+      // GROUND COLLISION
       if (m_has_ground && o.position.y <= m_ground_y)
       {
-        o.position.y = m_ground_y; // Prevent clipping past the floor boundary
+        o.position.y = m_ground_y; // Prevent clipping past the floor
         o.velocity.y = -o.velocity.y;
       }
     }

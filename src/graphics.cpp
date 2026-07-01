@@ -43,7 +43,6 @@ void GraphicsEngine::render(const std::vector<Object> &objects)
   SDL_SetRenderDrawColor(m_renderer, 24, 24, 37, 255);
   SDL_RenderClear(m_renderer);
 
-  // Get a reference to the simulator instance to check for the ground configuration
   const auto &sim = Simulator::instance();
   double ground_world_y = sim.has_ground() ? sim.get_ground_y() : 0.0;
 
@@ -52,11 +51,11 @@ void GraphicsEngine::render(const std::vector<Object> &objects)
   world_to_screen(0, ground_world_y, floor_x1, floor_y1);
   world_to_screen(m_screen_width / m_meters_to_pixels, ground_world_y, floor_x2, floor_y2);
 
-  // Draw the visual floor line
+  // Draw the floor line
   SDL_SetRenderDrawColor(m_renderer, 108, 112, 134, 255); // Muted grey line
   SDL_RenderLine(m_renderer, 0.0f, floor_y1, static_cast<float>(m_screen_width), floor_y2);
 
-  // Vector scaling metrics
+  // Vector scaling
   const double vel_scale = 0.5;
   const double force_scale = 0.5;
 
@@ -65,7 +64,7 @@ void GraphicsEngine::render(const std::vector<Object> &objects)
     float sx, sy;
     world_to_screen(obj.position.x, obj.position.y, sx, sy);
 
-    // 1. Velocity Vector (Green)
+    // Velocity Vector (Green)
     float vel_end_x, vel_end_y;
     world_to_screen(obj.position.x + obj.velocity.x * vel_scale,
                     obj.position.y + obj.velocity.y * vel_scale,
@@ -73,7 +72,7 @@ void GraphicsEngine::render(const std::vector<Object> &objects)
     SDL_SetRenderDrawColor(m_renderer, 166, 227, 161, 255);
     SDL_RenderLine(m_renderer, sx, sy, vel_end_x, vel_end_y);
 
-    // 2. Sigma Force Vector (Red)
+    // Sigma Force Vector (Red)
     float force_end_x, force_end_y;
     world_to_screen(obj.position.x + obj.sigma_force.x * force_scale,
                     obj.position.y + obj.sigma_force.y * force_scale,
@@ -81,7 +80,7 @@ void GraphicsEngine::render(const std::vector<Object> &objects)
     SDL_SetRenderDrawColor(m_renderer, 243, 139, 168, 255);
     SDL_RenderLine(m_renderer, sx, sy, force_end_x, force_end_y);
 
-    // 3. Object Body (Pastel Pink Square)
+    // Object Body
     SDL_SetRenderDrawColor(m_renderer, 245, 194, 231, 255);
     SDL_FRect rect{sx - 5.0f, sy - 5.0f, 10.0f, 10.0f};
     SDL_RenderFillRect(m_renderer, &rect);
