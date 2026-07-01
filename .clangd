@@ -1,4 +1,5 @@
 CompileFlags:
+  CompilationDatabase: "build"  # Tells clangd to look in the build folder for SFML headers
   Add: [
     "-Wall",              # Enable common warnings
     "-Wextra",            # Enable even more warnings
