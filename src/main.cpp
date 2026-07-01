@@ -1,16 +1,24 @@
+#include "const.hpp"
 #include "simulator.hpp"
+#include <array>
+#include <functional>
+#include <iostream>
 
 // Global reference to the engine instance
 auto &instance = Simulator::instance();
+
+// Helper constants for fractional scaling relative to world dimensions
+const double max_x = static_cast<double>(consts::SCREEN_WIDTH) / consts::METERS_TO_PIXELS;
+const double max_y = static_cast<double>(consts::SCREEN_HEIGHT) / consts::METERS_TO_PIXELS;
 
 // 1. Constant Horizontal Acceleration (Rocket Propulsion Simulation)
 auto example_constant_acceleration(void) -> void
 {
   Object obj;
   obj.mass = 2.0;
-  obj.position = Vector(2.0, 5.0);  // Bottom left, off the ground
-  obj.velocity = Vector(0.0, 0.0);  // Starts from rest
-  obj.add_force(Vector(15.0, 0.0)); // Constant rightward thruster force
+  obj.position = Vector(max_x * 0.05, max_y * 0.15); // Bottom-left off the floor
+  obj.velocity = Vector(0.0, 0.0);
+  obj.add_force(Vector(15.0, 0.0));
 
   instance.add_object(obj);
   instance.run();
@@ -21,9 +29,9 @@ auto example_braking_friction(void) -> void
 {
   Object obj;
   obj.mass = 4.0;
-  obj.position = Vector(2.0, 1.0);  // Spawns low on the floor
-  obj.velocity = Vector(35.0, 0.0); // High initial horizontal speed
-  obj.add_friction(0.4);            // High coefficient of friction (mu = 0.4)
+  obj.position = Vector(max_x * 0.05, max_y * 0.03); // Low on the floor
+  obj.velocity = Vector(20.0, 0.0);                  // High initial horizontal speed
+  obj.add_friction(0.4);
 
   instance.add_object(obj);
   instance.run();
@@ -34,9 +42,9 @@ auto example_parabolic_arc(void) -> void
 {
   Object obj;
   obj.mass = 1.0;
-  obj.position = Vector(2.0, 1.0);   // Near bottom-left corner
-  obj.velocity = Vector(18.0, 24.0); // Thrown upwards and rightwards
-  obj.add_gravity();                 // Downward gravity pulls it into an arc
+  obj.position = Vector(max_x * 0.05, max_y * 0.03);
+  obj.velocity = Vector(18.0, 24.0);
+  obj.add_gravity();
 
   instance.add_object(obj);
   instance.run();
@@ -47,9 +55,9 @@ auto example_free_fall(void) -> void
 {
   Object obj;
   obj.mass = 1.5;
-  obj.position = Vector(20.0, 28.0); // Spawns right at the top center
-  obj.velocity = Vector(0.0, 0.0);   // Dropped from rest
-  obj.add_gravity();                 // Pulls down natively
+  obj.position = Vector(max_x * 0.50, max_y * 0.93); // Top center
+  obj.velocity = Vector(0.0, 0.0);
+  obj.add_gravity();
 
   instance.add_object(obj);
   instance.run();
@@ -58,16 +66,16 @@ auto example_free_fall(void) -> void
 // 5. The Galileo Drop Experiment (Verifying Mass Independence in a Vacuum)
 auto example_galileo_drop(void) -> void
 {
-  // Light Object (e.g., Tennis ball)
+  // Light Object
   Object light_obj;
   light_obj.mass = 0.5;
-  light_obj.position = Vector(15.0, 25.0);
+  light_obj.position = Vector(max_x * 0.35, max_y * 0.83);
   light_obj.add_gravity();
 
-  // Heavy Object (e.g., Massive Anvil) - 100x heavier
+  // Heavy Object - 100x heavier
   Object heavy_obj;
   heavy_obj.mass = 50.0;
-  heavy_obj.position = Vector(25.0, 25.0);
+  heavy_obj.position = Vector(max_x * 0.65, max_y * 0.83);
   heavy_obj.add_gravity();
 
   instance.add_object(light_obj);
@@ -78,18 +86,18 @@ auto example_galileo_drop(void) -> void
 // 6. Artillery Crossfire (Angle Optimization Mechanics)
 auto example_artillery_crossfire(void) -> void
 {
-  // Left Battery: Low, blistering direct-fire shot
+  // Left Battery
   Object alpha;
   alpha.mass = 1.0;
-  alpha.position = Vector(1.0, 1.0);
-  alpha.velocity = Vector(28.0, 12.0);
+  alpha.position = Vector(max_x * 0.025, max_y * 0.03);
+  alpha.velocity = Vector(14.0, 28.0);
   alpha.add_gravity();
 
-  // Right Battery: High, sweeping mortar arc shot
+  // Right Battery
   Object bravo;
   bravo.mass = 1.0;
-  bravo.position = Vector(39.0, 1.0);   // Far right edge
-  bravo.velocity = Vector(-14.0, 28.0); // Flung up and leftwards
+  bravo.position = Vector(max_x * 0.975, max_y * 0.03);
+  bravo.velocity = Vector(-14.0, 28.0);
   bravo.add_gravity();
 
   instance.add_object(alpha);
@@ -102,12 +110,9 @@ auto example_headwind_drag(void) -> void
 {
   Object glider;
   glider.mass = 1.0;
-  glider.position = Vector(2.0, 20.0); // High mid-air spawn
-  glider.velocity = Vector(30.0, 2.0); // Gliding forward with high velocity
-
+  glider.position = Vector(max_x * 0.05, max_y * 0.65);
+  glider.velocity = Vector(30.0, 2.0);
   glider.add_gravity();
-
-  // Continuous gale wind force pushing back to the left
   glider.add_force(Vector(-12.0, 0.0));
 
   instance.add_object(glider);
@@ -117,7 +122,6 @@ auto example_headwind_drag(void) -> void
 // 8. Multi-Stage Fountain (Simultaneous Multi-Angle Projection)
 auto example_fountain(void) -> void
 {
-  // Create 5 identical objects launched from the same origin point at different angles
   double velocities_x[5] = {5.0, 10.0, 15.0, 20.0, 25.0};
   double velocities_y[5] = {25.0, 23.0, 20.0, 16.0, 10.0};
 
@@ -125,7 +129,7 @@ auto example_fountain(void) -> void
   {
     Object droplet;
     droplet.mass = 1.0;
-    droplet.position = Vector(2.0, 1.0); // Bottom-left corner
+    droplet.position = Vector(max_x * 0.05, max_y * 0.03);
     droplet.velocity = Vector(velocities_x[idx], velocities_y[idx]);
     droplet.add_gravity();
 
@@ -135,18 +139,42 @@ auto example_fountain(void) -> void
   instance.run();
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
-  // Un-comment the specific scenario you want to visually simulate:
+  if (argc != 2)
+  {
+    std::cerr << "Usage: " << argv[0] << " <scenario>" << std::endl;
+    std::cerr << "Available scenarios:" << std::endl;
+    std::cerr << "  1: Constant Horizontal Acceleration" << std::endl;
+    std::cerr << "  2: Sliding Block with Kinetic Friction" << std::endl;
+    std::cerr << "  3: Classical Projectile Motion" << std::endl;
+    std::cerr << "  4: Terminal Velocity Free-Fall" << std::endl;
+    std::cerr << "  5: The Galileo Drop Experiment" << std::endl;
+    std::cerr << "  6: Artillery Crossfire" << std::endl;
+    std::cerr << "  7: Constant Headwind Drag" << std::endl;
+    std::cerr << "  8: Multi-Stage Fountain" << std::endl;
+    return 1;
+  }
 
-  example_constant_acceleration();
-  // example_braking_friction();
-  // example_parabolic_arc();
-  // example_free_fall();
-  // example_galileo_drop();
-  // example_artillery_crossfire();
-  // example_headwind_drag();
-  // example_fountain();
+  const std::array<std::function<void(void)>, 8> examples = {
+      example_constant_acceleration,
+      example_braking_friction,
+      example_parabolic_arc,
+      example_free_fall,
+      example_galileo_drop,
+      example_artillery_crossfire,
+      example_headwind_drag,
+      example_fountain,
+  };
+
+  size_t exampleToRun = std::stoi(argv[1]);
+  if (exampleToRun < 1 || exampleToRun > examples.size())
+  {
+    std::cerr << "Invalid example number: " << exampleToRun << std::endl;
+    return 1;
+  }
+
+  examples.at(exampleToRun - 1)();
 
   return 0;
 }

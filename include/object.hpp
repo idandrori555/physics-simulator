@@ -26,5 +26,5 @@ struct Object
   void add_friction(const friction_t friction_mu);
   void add_gravity(const gravity_t gravity = consts::gravity, lambda_t stop_condition = nullptr);
 
-  Vector normal() const;
+  double normal() const;
 };
