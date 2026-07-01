@@ -1,19 +1,11 @@
 #pragma once
 
+#include "const.hpp"
+#include "types.hpp"
 #include "vector.hpp"
-#include <functional>
 
 struct Object
 {
-  using energy_t = double;
-  using mass_t = double;
-  using position_t = Vector;
-  using velocity_t = Vector;
-  using acceleration_t = Vector;
-  using force_t = Vector;
-  using friction_t = double;
-  using lambda_t = std::function<bool(Object &)>;
-
   mass_t mass{1};
   position_t position{0, 0};
   velocity_t velocity{0, 0};
@@ -32,6 +24,7 @@ struct Object
 
   void add_force(const Vector &force, lambda_t stop_condition = nullptr);
   void add_friction(const friction_t friction_mu);
+  void add_gravity(const gravity_t gravity = consts::gravity, lambda_t stop_condition = nullptr);
 
   Vector normal() const;
 };

@@ -23,8 +23,20 @@ auto example_2(void) -> void
   instance.run();
 }
 
+auto example_3(void) -> void
+{
+  Object obj;
+  obj.mass = 1;
+  obj.position = Vector(0, 0); // start off at origin
+  obj.velocity = Vector(3, 3); // 45 degree angle off the ground, angled throw.
+  obj.add_gravity();
+
+  instance.add_object(obj);
+  instance.run();
+}
+
 int main(void)
 {
-  example_2();
+  example_3();
   return 0;
 }

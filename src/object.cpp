@@ -1,14 +1,6 @@
 #include "object.hpp"
 #include "const.hpp"
-
-using energy_t = Object::energy_t;
-using mass_t = Object::mass_t;
-using position_t = Object::position_t;
-using velocity_t = Object::velocity_t;
-using acceleration_t = Object::acceleration_t;
-using force_t = Object::force_t;
-using friction_t = Object::friction_t;
-using lambda_t = Object::lambda_t;
+#include "types.hpp"
 
 Object::Object(mass_t mass, const Vector &position, const Vector &velocity)
     : mass(mass), position(position), velocity(velocity)
@@ -27,7 +19,7 @@ energy_t Object::kinetic_energy() const
 
 energy_t Object::potential_energy() const
 {
-  return mass * std::abs(consts::gravity.y) * position.y;
+  return mass * std::abs(consts::gravity) * position.y;
 }
 
 energy_t Object::total_energy() const
@@ -58,6 +50,11 @@ void Object::add_friction(const friction_t friction_mu)
               }
               return false;
             });
+}
+
+void Object::add_gravity(const gravity_t gravity, lambda_t stop_condition)
+{
+  add_force(Vector(0, -gravity), stop_condition);
 }
 
 Vector Object::normal() const
