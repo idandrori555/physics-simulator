@@ -16,7 +16,12 @@ public:
   static Simulator &instance();
   static void add_object(const Object &object);
   static void sleep(double seconds);
-  static void run(size_t ticks = 100);
+  static void run(void);
+
+  const std::vector<Object> &get_objects() const
+  {
+    return m_objects;
+  }
 
   friend std::ostream &operator<<(std::ostream &os, const Simulator &simulator)
   {

@@ -1,5 +1,6 @@
 #include "simulator.hpp"
 #include "const.hpp"
+#include "graphics.hpp"
 #include <iostream>
 #include <thread>
 
@@ -20,7 +21,7 @@ void Simulator::sleep(double seconds)
   std::this_thread::sleep_for(std::chrono::duration<double>(seconds));
 }
 
-void Simulator::run(size_t ticks)
+void Simulator::run(void)
 {
   if (Simulator::m_objects.empty())
   {
@@ -28,12 +29,21 @@ void Simulator::run(size_t ticks)
     return;
   }
 
-  auto &i = instance();
-  while (ticks-- > 0)
+  GraphicsEngine engine;
+  if (!engine.init())
   {
+    std::cerr << "Graphics engine failed to initialize" << std::endl;
+    return;
+  }
+
+  bool running = true;
+  auto &i = instance();
+  while (running)
+  {
+    engine.handle_events(running);
 
     std::cout << i << std::endl;
-    for (auto &o : Simulator::m_objects)
+    for (auto &o : m_objects)
     {
       // Remove any forces that are no longer valid
       std::erase_if(o.m_conditional_forces, [&](auto &pair)
@@ -48,16 +58,12 @@ void Simulator::run(size_t ticks)
                     });
 
       o.acceleration = o.sigma_force / o.mass;
-
-      // Keep track of the old velocity
       Vector old_velocity = o.velocity;
-
-      // Update to the new velocity
       o.velocity += o.acceleration * consts::time_step;
-
-      // Use the average of old and new velocity to update position
       o.position += (old_velocity + o.velocity) * 0.5 * consts::time_step;
     }
-    Simulator::sleep(consts::time_step);
+
+    engine.render(m_objects);
+    sleep(consts::time_step);
   }
 }
