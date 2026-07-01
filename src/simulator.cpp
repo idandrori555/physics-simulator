@@ -62,29 +62,53 @@ void Simulator::run(void)
       o.velocity += o.acceleration * consts::time_step;
       o.position += (old_velocity + o.velocity) * 0.5 * consts::time_step;
 
-      // ---- GROUND COLLISION RESOLUTION ----
+      // GROUND COLLISION RESOLUTION
       if (m_has_ground && o.position.y <= m_ground_y)
       {
-        o.position.y = m_ground_y; // Keep it perfectly on the floor
-
-        // Invert velocity for a bounce (e.g., 0.6 retains 60% of its kinetic energy)
-        const double restitution = 0.6;
-
-        if (std::abs(o.velocity.y) > 0.5)
-        {
-          o.velocity.y = -o.velocity.y * restitution;
-        }
-        else
-        {
-          o.velocity.y = 0; // Stop jittering when resting
-        }
-
-        // Apply friction to the horizontal speed while sliding on the ground
-        o.velocity.x *= 0.98;
+        o.position.y = m_ground_y; // Prevent clipping past the floor boundary
+        o.velocity.y = -o.velocity.y;
       }
     }
 
     engine.render(m_objects);
     sleep(consts::time_step);
   }
+}
+
+std::vector<Object> &Simulator::get_objects()
+{
+  return m_objects;
+}
+
+void Simulator::set_ground(double y_value)
+{
+  m_ground_y = y_value;
+  m_has_ground = true;
+}
+
+double Simulator::get_ground_y()
+{
+  return m_ground_y;
+}
+
+bool Simulator::has_ground()
+{
+  return m_has_ground;
+}
+
+std::ostream &operator<<(std::ostream &os, const Simulator &simulator)
+{
+  size_t idx{1};
+  for (const auto &o : simulator.m_objects)
+  {
+    os << "  Object " << idx++ << ":" << std::endl;
+    os << "    mass: " << o.mass << std::endl;
+    os << "    position: " << o.position << std::endl;
+    os << "    velocity: " << o.velocity << std::endl;
+    os << "    acceleration: " << o.acceleration << std::endl;
+    os << "    kinetic energy: " << o.kinetic_energy() << std::endl;
+    os << "    potential energy: " << o.potential_energy() << std::endl;
+    os << "    total energy: " << o.total_energy() << std::endl;
+  }
+  return os;
 }
