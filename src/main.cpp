@@ -28,6 +28,9 @@ auto example_constant_acceleration(void) -> void
 // 2. Sliding Block with Kinetic Friction (Braking Simulation)
 auto example_braking_friction(void) -> void
 {
+  // Set ground line right under the spawning point
+  instance.set_ground(max_y * 0.03);
+
   Object obj;
   obj.mass = 4.0;
   obj.position = Vector(max_x * 0.05, max_y * 0.03); // Low on the floor
@@ -41,6 +44,9 @@ auto example_braking_friction(void) -> void
 // 3. Classical Projectile Motion (High Parabolic Arc)
 auto example_parabolic_arc(void) -> void
 {
+  // Low floor for a clean high bounce cycle
+  instance.set_ground(max_y * 0.03);
+
   Object obj;
   obj.mass = 1.0;
   obj.position = Vector(max_x * 0.05, max_y * 0.03);
@@ -54,6 +60,9 @@ auto example_parabolic_arc(void) -> void
 // 4. Terminal Velocity Free-Fall (High Altitude Drop)
 auto example_free_fall(void) -> void
 {
+  // Ground line at the bottom intercepts the high-altitude drop
+  instance.set_ground(max_y * 0.03);
+
   Object obj;
   obj.mass = 1.5;
   obj.position = Vector(max_x * 0.50, max_y * 0.93); // Top center
@@ -67,6 +76,9 @@ auto example_free_fall(void) -> void
 // 5. The Galileo Drop Experiment (Verifying Mass Independence in a Vacuum)
 auto example_galileo_drop(void) -> void
 {
+  // Allows both objects to impact simultaneously and bounce up to their original heights
+  instance.set_ground(max_y * 0.03);
+
   // Light Object
   Object light_obj;
   light_obj.mass = 0.5;
@@ -87,6 +99,9 @@ auto example_galileo_drop(void) -> void
 // 6. Artillery Crossfire (Angle Optimization Mechanics)
 auto example_artillery_crossfire(void) -> void
 {
+  // Ground line captures the falling mortars
+  instance.set_ground(max_y * 0.03);
+
   // Left Battery
   Object alpha;
   alpha.mass = 1.0;
@@ -109,6 +124,9 @@ auto example_artillery_crossfire(void) -> void
 // 7. Constant Headwind Drag (Dynamic Balancing Forces)
 auto example_headwind_drag(void) -> void
 {
+  // Ground captures the glider when gravity overcomes lift
+  instance.set_ground(max_y * 0.03);
+
   Object glider;
   glider.mass = 1.0;
   glider.position = Vector(max_x * 0.05, max_y * 0.65);
@@ -123,6 +141,9 @@ auto example_headwind_drag(void) -> void
 // 8. Multi-Stage Fountain (Simultaneous Multi-Angle Projection)
 auto example_fountain(void) -> void
 {
+  // Every separate droplet will impact and bounce cleanly
+  instance.set_ground(max_y * 0.03);
+
   double velocities_x[5] = {5.0, 10.0, 15.0, 20.0, 25.0};
   double velocities_y[5] = {25.0, 23.0, 20.0, 16.0, 10.0};
 
@@ -159,27 +180,22 @@ auto example_circular_motion(void) -> void
   satellite.velocity = Vector(speed, 0.0);
 
   // 3. Apply a dynamic frame-by-frame centripetal force using a conditional force
-  // We use the lambda to compute the force vector pointing back to the center every frame.
   double dynamic_force_mag = (satellite.mass * speed * speed) / radius;
 
   satellite.add_force(
-      Vector(0, 0), // Base vector (unused since we update it dynamically or via a custom hook)
+      Vector(0, 0),
       [center_x, center_y, dynamic_force_mag](Object &o) -> bool
       {
-        // Calculate vector from object pointing directly to the center
         Vector to_center = Vector(center_x, center_y) - o.position;
 
-        // Normalize the vector to get the direction
         double dist = std::sqrt(to_center.x * to_center.x + to_center.y * to_center.y);
         if (dist > 0.001)
         {
           Vector direction = Vector(to_center.x / dist, to_center.y / dist);
-
-          // Re-assign the active pull force toward the center
           o.sigma_force = direction * dynamic_force_mag;
         }
 
-        return false; // Return false so this force tracker never stops/expires
+        return false;
       });
 
   instance.add_object(satellite);
@@ -189,13 +205,12 @@ auto example_circular_motion(void) -> void
 // 10. Bouncing Ball (Bounce-Back)
 auto example_bouncing_ball(void) -> void
 {
-  // Set ground at 2.0 meters above the window bottom
-  instance.set_ground(2.0);
+  // Elevated floor line to visually emphasize the bounce mechanics explicitly
+  instance.set_ground(max_y * 0.25);
 
   Object ball;
   ball.mass = 1.0;
   ball.position = Vector(max_x * 0.5, max_y * 0.8); // Drop from high up
-  ball.velocity = Vector(5.0, 0.0);                 // Slight horizontal push
   ball.add_gravity();
 
   instance.add_object(ball);

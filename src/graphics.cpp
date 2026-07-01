@@ -1,4 +1,5 @@
 #include "graphics.hpp"
+#include "simulator.hpp"
 #include <iostream>
 
 void GraphicsEngine::world_to_screen(double world_x, double world_y, float &screen_x, float &screen_y)
@@ -42,11 +43,17 @@ void GraphicsEngine::render(const std::vector<Object> &objects)
   SDL_SetRenderDrawColor(m_renderer, 24, 24, 37, 255);
   SDL_RenderClear(m_renderer);
 
-  // Draw floor line at world y = 0
+  // Get a reference to the simulator instance to check for the ground configuration
+  const auto &sim = Simulator::instance();
+  double ground_world_y = sim.has_ground() ? sim.get_ground_y() : 0.0;
+
+  // Convert the custom ground height to screen coordinates dynamically
   float floor_x1, floor_y1, floor_x2, floor_y2;
-  world_to_screen(0, 0, floor_x1, floor_y1);
-  world_to_screen(m_screen_width / m_meters_to_pixels, 0, floor_x2, floor_y2);
-  SDL_SetRenderDrawColor(m_renderer, 108, 112, 134, 255);
+  world_to_screen(0, ground_world_y, floor_x1, floor_y1);
+  world_to_screen(m_screen_width / m_meters_to_pixels, ground_world_y, floor_x2, floor_y2);
+
+  // Draw the visual floor line
+  SDL_SetRenderDrawColor(m_renderer, 108, 112, 134, 255); // Muted grey line
   SDL_RenderLine(m_renderer, 0.0f, floor_y1, static_cast<float>(m_screen_width), floor_y2);
 
   // Vector scaling metrics
