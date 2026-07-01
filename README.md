@@ -1,4 +1,4 @@
-# PhysicsSimulator
+# Physics Simulator
 
 A 2D classical physics simulator with real-time SDL3 visualization, written in modern C++ (C++23). Built as a learning tool for understanding numerical integration, force dynamics, energy conservation, and collision response in discrete-time simulation.
 
