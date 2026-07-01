@@ -1,6 +1,7 @@
 #include "const.hpp"
 #include "simulator.hpp"
 #include <array>
+#include <cmath>
 #include <functional>
 #include <iostream>
 
@@ -139,6 +140,52 @@ auto example_fountain(void) -> void
   instance.run();
 }
 
+// 9. Uniform Circular Motion Simulation (Orbital Mechanics)
+auto example_circular_motion(void) -> void
+{
+  Object satellite;
+  satellite.mass = 1.0;
+
+  // Set the orbit center to the middle of your screen space
+  double center_x = max_x * 0.5;
+  double center_y = max_y * 0.5;
+  double radius = 8.0; // 8 meters orbital radius
+
+  // 1. Position the object at the top of the orbit arc
+  satellite.position = Vector(center_x, center_y + radius);
+
+  // 2. Give it a perpendicular tangential velocity (moving rightward)
+  double speed = 12.0; // Tangential speed in m/s
+  satellite.velocity = Vector(speed, 0.0);
+
+  // 3. Apply a dynamic frame-by-frame centripetal force using a conditional force
+  // We use the lambda to compute the force vector pointing back to the center every frame.
+  double dynamic_force_mag = (satellite.mass * speed * speed) / radius;
+
+  satellite.add_force(
+      Vector(0, 0), // Base vector (unused since we update it dynamically or via a custom hook)
+      [center_x, center_y, dynamic_force_mag](Object &o) -> bool
+      {
+        // Calculate vector from object pointing directly to the center
+        Vector to_center = Vector(center_x, center_y) - o.position;
+
+        // Normalize the vector to get the direction
+        double dist = std::sqrt(to_center.x * to_center.x + to_center.y * to_center.y);
+        if (dist > 0.001)
+        {
+          Vector direction = Vector(to_center.x / dist, to_center.y / dist);
+
+          // Re-assign the active pull force toward the center
+          o.sigma_force = direction * dynamic_force_mag;
+        }
+
+        return false; // Return false so this force tracker never stops/expires
+      });
+
+  instance.add_object(satellite);
+  instance.run();
+}
+
 int main(int argc, char *argv[])
 {
   if (argc != 2)
@@ -153,10 +200,12 @@ int main(int argc, char *argv[])
     std::cerr << "  6: Artillery Crossfire" << std::endl;
     std::cerr << "  7: Constant Headwind Drag" << std::endl;
     std::cerr << "  8: Multi-Stage Fountain" << std::endl;
+    std::cerr << "  9: Uniform Circular Motion Simulation" << std::endl;
+
     return 1;
   }
 
-  const std::array<std::function<void(void)>, 8> examples = {
+  const std::array<std::function<void(void)>, 9> examples = {
       example_constant_acceleration,
       example_braking_friction,
       example_parabolic_arc,
@@ -165,6 +214,7 @@ int main(int argc, char *argv[])
       example_artillery_crossfire,
       example_headwind_drag,
       example_fountain,
+      example_circular_motion,
   };
 
   size_t exampleToRun = std::stoi(argv[1]);

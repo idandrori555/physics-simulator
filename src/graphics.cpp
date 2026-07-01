@@ -21,7 +21,6 @@ bool GraphicsEngine::init()
     std::cerr << "Window/Renderer Creation Error: " << SDL_GetError() << std::endl;
     return false;
   }
-
   return true;
 }
 
