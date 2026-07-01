@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/object.hpp"
+#include "object.hpp"
 #include <ostream>
 #include <vector>
 

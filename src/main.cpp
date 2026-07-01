@@ -1,4 +1,4 @@
-#include "../include/simulator.hpp"
+#include "simulator.hpp"
 
 auto &instance = Simulator::instance();
 

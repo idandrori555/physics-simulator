@@ -1,5 +1,5 @@
-#include "../include/object.hpp"
-#include "../include/const.hpp"
+#include "object.hpp"
+#include "const.hpp"
 
 using energy_t = Object::energy_t;
 using mass_t = Object::mass_t;

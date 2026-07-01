@@ -1,4 +1,4 @@
-#include "../include/vector.hpp"
+#include "vector.hpp"
 #include <cmath>
 
 Vector::Vector(double x, double y) : x(x), y(y)

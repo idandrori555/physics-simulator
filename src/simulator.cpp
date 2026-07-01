@@ -1,5 +1,5 @@
-#include "../include/simulator.hpp"
-#include "../include/const.hpp"
+#include "simulator.hpp"
+#include "const.hpp"
 #include <iostream>
 #include <thread>
 

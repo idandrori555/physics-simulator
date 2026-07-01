@@ -6,6 +6,7 @@ CompileFlags:
     "-Wshadow",           # Warn if a variable hides another variable
     "-std=c++23",         # Use the latest C++ features
     "-fstandalone-debug", # Improves debug info for some editors
+    "-I../include",
   ]
 
 Index:
