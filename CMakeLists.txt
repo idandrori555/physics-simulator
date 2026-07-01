@@ -27,6 +27,7 @@ set(SOURCES
     src/vector.cpp
     src/object.cpp
     src/simulator.cpp
+    src/graphics.cpp
 )
 
 # Define the executable target
