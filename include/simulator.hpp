@@ -23,6 +23,22 @@ public:
     return m_objects;
   }
 
+  static void set_ground(double y_value)
+  {
+    m_ground_y = y_value;
+    m_has_ground = true;
+  }
+
+  static double get_ground_y()
+  {
+    return m_ground_y;
+  }
+
+  static bool has_ground()
+  {
+    return m_has_ground;
+  }
+
   friend std::ostream &operator<<(std::ostream &os, const Simulator &simulator)
   {
     size_t idx{1};
@@ -42,6 +58,8 @@ public:
 
 private:
   inline static std::vector<Object> m_objects;
+  inline static double m_ground_y{0.0};
+  inline static bool m_has_ground{false};
 
   Simulator() = default;
   ~Simulator() = default;

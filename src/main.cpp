@@ -186,6 +186,22 @@ auto example_circular_motion(void) -> void
   instance.run();
 }
 
+// 10. Bouncing Ball (Bounce-Back)
+auto example_bouncing_ball(void) -> void
+{
+  // Set ground at 2.0 meters above the window bottom
+  instance.set_ground(2.0);
+
+  Object ball;
+  ball.mass = 1.0;
+  ball.position = Vector(max_x * 0.5, max_y * 0.8); // Drop from high up
+  ball.velocity = Vector(5.0, 0.0);                 // Slight horizontal push
+  ball.add_gravity();
+
+  instance.add_object(ball);
+  instance.run();
+}
+
 int main(int argc, char *argv[])
 {
   if (argc != 2)
@@ -201,11 +217,12 @@ int main(int argc, char *argv[])
     std::cerr << "  7: Constant Headwind Drag" << std::endl;
     std::cerr << "  8: Multi-Stage Fountain" << std::endl;
     std::cerr << "  9: Uniform Circular Motion Simulation" << std::endl;
+    std::cerr << " 10: Bouncing Ball (Bounce-Back)" << std::endl;
 
     return 1;
   }
 
-  const std::array<std::function<void(void)>, 9> examples = {
+  const std::array<std::function<void(void)>, 10> examples = {
       example_constant_acceleration,
       example_braking_friction,
       example_parabolic_arc,
@@ -215,6 +232,7 @@ int main(int argc, char *argv[])
       example_headwind_drag,
       example_fountain,
       example_circular_motion,
+      example_bouncing_ball,
   };
 
   size_t exampleToRun = std::stoi(argv[1]);

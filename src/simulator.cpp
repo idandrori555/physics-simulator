@@ -61,6 +61,27 @@ void Simulator::run(void)
       Vector old_velocity = o.velocity;
       o.velocity += o.acceleration * consts::time_step;
       o.position += (old_velocity + o.velocity) * 0.5 * consts::time_step;
+
+      // ---- GROUND COLLISION RESOLUTION ----
+      if (m_has_ground && o.position.y <= m_ground_y)
+      {
+        o.position.y = m_ground_y; // Keep it perfectly on the floor
+
+        // Invert velocity for a bounce (e.g., 0.6 retains 60% of its kinetic energy)
+        const double restitution = 0.6;
+
+        if (std::abs(o.velocity.y) > 0.5)
+        {
+          o.velocity.y = -o.velocity.y * restitution;
+        }
+        else
+        {
+          o.velocity.y = 0; // Stop jittering when resting
+        }
+
+        // Apply friction to the horizontal speed while sliding on the ground
+        o.velocity.x *= 0.98;
+      }
     }
 
     engine.render(m_objects);
