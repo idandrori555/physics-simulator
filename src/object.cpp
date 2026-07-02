@@ -39,14 +39,17 @@ void Object::add_force(const Vector &force, lambda_t stop_condition)
 void Object::add_friction(const friction_t friction_mu)
 {
   force_t friction_force = force_t(-1 * normal() * friction_mu, 0);
-  if (velocity.x < 0)
+  bool moving_right = velocity.x >= 0;
+
+  if (!moving_right)
     friction_force.x *= -1;
 
-  add_force(friction_force, [](Object &o)
+  add_force(friction_force, [moving_right](Object &o)
             {
-              if (o.velocity.x <= 0)
+              bool should_stop = moving_right ? (o.velocity.x <= 0) : (o.velocity.x >= 0);
+              if (should_stop)
               {
-                o.velocity.x = 0; // reset velocity to 0
+                o.velocity.x = 0;
                 return true;
               }
               return false;

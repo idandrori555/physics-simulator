@@ -33,8 +33,8 @@ auto example_braking_friction(void) -> void
 
   Object obj;
   obj.mass = 4.0;
-  obj.position = Vector(max_x * 0.05, max_y * 0.03); // Low on the floor
-  obj.velocity = Vector(20.0, 0.0);                  // High initial horizontal speed
+  obj.position = Vector(max_x * .95, max_y * 0.03); // Low on the floor
+  obj.velocity = Vector(-20.0, 0.0);                // High initial horizontal speed
   obj.add_friction(0.4);
 
   instance.add_object(obj);

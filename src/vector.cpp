@@ -46,5 +46,10 @@ double Vector::operator*(const Vector &other) const
 
 Vector Vector::operator/(double scalar) const
 {
+  if (scalar == 0)
+  {
+    throw std::invalid_argument("Cannot divide by zero");
+  }
+
   return Vector(x / scalar, y / scalar);
 }
