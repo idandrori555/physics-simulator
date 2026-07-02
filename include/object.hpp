@@ -20,8 +20,8 @@ struct Object
   Object(mass_t mass, decltype(Vector::x) x = 0, decltype(Vector::y) y = 0, decltype(Vector::x) vx = 0, decltype(Vector::y) vy = 0, decltype(Vector::x) ax = 0, decltype(Vector::y) ay = 0);
 
   energy_t kinetic_energy() const;
-  energy_t potential_energy() const;
-  energy_t total_energy() const;
+  energy_t potential_energy(const double ground_y) const;
+  energy_t total_energy(const double ground_y) const;
 
   void add_force(const Vector &force, lambda_t stop_condition = nullptr);
   void add_friction(const friction_t friction_mu);

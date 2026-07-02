@@ -2,6 +2,7 @@
 
 #include "const.hpp"
 #include "object.hpp"
+#include "simulator.hpp"
 #include <SDL3/SDL.h>
 
 class GraphicsEngine
@@ -19,7 +20,7 @@ private:
 public:
   bool init();
   void handle_events(bool &running);
-  void render(const std::vector<Object> &objects);
+  void render(const std::vector<Object> &objects, const Simulator &sim);
   void cleanup();
 
   ~GraphicsEngine() noexcept;

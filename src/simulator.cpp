@@ -1,19 +1,11 @@
 #include "simulator.hpp"
-#include "const.hpp"
 #include "graphics.hpp"
 #include <iostream>
 #include <thread>
 
-// Global access point
-Simulator &Simulator::instance()
-{
-  static Simulator instance;
-  return instance;
-}
-
 void Simulator::add_object(const Object &object)
 {
-  Simulator::m_objects.push_back(object);
+  m_objects.push_back(object);
 }
 
 void Simulator::sleep(double seconds)
@@ -23,7 +15,7 @@ void Simulator::sleep(double seconds)
 
 void Simulator::run(void)
 {
-  if (Simulator::m_objects.empty())
+  if (m_objects.empty())
   {
     std::cerr << "No objects to simulate" << std::endl;
     return;
@@ -37,12 +29,11 @@ void Simulator::run(void)
   }
 
   bool running = true;
-  auto &i = instance();
   while (running)
   {
     engine.handle_events(running);
 
-    std::cout << i << std::endl;
+    std::cout << *this << std::endl;
     for (auto &o : m_objects)
     {
       // Remove any forces that are no longer valid
@@ -70,7 +61,7 @@ void Simulator::run(void)
       }
     }
 
-    engine.render(m_objects);
+    engine.render(m_objects, *this);
     sleep(consts::time_step);
   }
 }
@@ -86,12 +77,12 @@ void Simulator::set_ground(double y_value)
   m_has_ground = true;
 }
 
-double Simulator::get_ground_y()
+double Simulator::get_ground_y() const
 {
   return m_ground_y;
 }
 
-bool Simulator::has_ground()
+bool Simulator::has_ground() const
 {
   return m_has_ground;
 }
@@ -107,8 +98,8 @@ std::ostream &operator<<(std::ostream &os, const Simulator &simulator)
     os << "    velocity: " << o.velocity << std::endl;
     os << "    acceleration: " << o.acceleration << std::endl;
     os << "    kinetic energy: " << o.kinetic_energy() << std::endl;
-    os << "    potential energy: " << o.potential_energy() << std::endl;
-    os << "    total energy: " << o.total_energy() << std::endl;
+    os << "    potential energy: " << o.potential_energy(simulator.get_ground_y()) << std::endl;
+    os << "    total energy: " << o.total_energy(simulator.get_ground_y()) << std::endl;
   }
   return os;
 }

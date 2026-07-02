@@ -1,5 +1,4 @@
 #include "graphics.hpp"
-#include "simulator.hpp"
 #include <iostream>
 
 GraphicsEngine::~GraphicsEngine() noexcept
@@ -42,13 +41,12 @@ void GraphicsEngine::handle_events(bool &running)
   }
 }
 
-void GraphicsEngine::render(const std::vector<Object> &objects)
+void GraphicsEngine::render(const std::vector<Object> &objects, const Simulator &sim)
 {
   // Clear screen to dark slate
   SDL_SetRenderDrawColor(m_renderer, 24, 24, 37, 255);
   SDL_RenderClear(m_renderer);
 
-  const auto &sim = Simulator::instance();
   double ground_world_y = sim.has_ground() ? sim.get_ground_y() : 0.0;
 
   // Convert the custom ground height to screen coordinates dynamically

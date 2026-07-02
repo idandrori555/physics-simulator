@@ -1,12 +1,12 @@
-#include "const.hpp"
 #include "simulator.hpp"
 #include <array>
 #include <cmath>
 #include <functional>
 #include <iostream>
+#include <string>
 
 // Global reference to the engine instance
-auto &instance = Simulator::instance();
+static Simulator instance;
 
 // Helper constants for fractional scaling relative to world dimensions
 const double max_x = static_cast<double>(consts::SCREEN_WIDTH) / consts::METERS_TO_PIXELS;
@@ -20,6 +20,8 @@ auto example_constant_acceleration(void) -> void
   obj.position = Vector(max_x * 0.05, max_y * 0.15); // Bottom-left off the floor
   obj.velocity = Vector(0.0, 0.0);
   obj.add_force(Vector(15.0, 0.0));
+
+  instance.set_ground(max_y * 0.03);
 
   instance.add_object(obj);
   instance.run();

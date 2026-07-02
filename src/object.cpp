@@ -1,7 +1,4 @@
 #include "object.hpp"
-#include "const.hpp"
-#include "simulator.hpp"
-#include "types.hpp"
 
 Object::Object(mass_t mass, const Vector &position, const Vector &velocity)
     : mass(mass), position(position), velocity(velocity)
@@ -18,14 +15,14 @@ energy_t Object::kinetic_energy() const
   return 0.5 * mass * (velocity * velocity);
 }
 
-energy_t Object::potential_energy() const
+energy_t Object::potential_energy(const double ground_y) const
 {
-  return mass * std::abs(consts::gravity) * (position.y - Simulator::instance().get_ground_y());
+  return mass * std::abs(consts::gravity) * (position.y - ground_y);
 }
 
-energy_t Object::total_energy() const
+energy_t Object::total_energy(const double ground_y) const
 {
-  return kinetic_energy() + potential_energy();
+  return kinetic_energy() + potential_energy(ground_y);
 }
 
 void Object::add_force(const Vector &force, lambda_t stop_condition)
