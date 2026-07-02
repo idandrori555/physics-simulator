@@ -2,6 +2,11 @@
 #include "simulator.hpp"
 #include <iostream>
 
+GraphicsEngine::~GraphicsEngine() noexcept
+{
+  cleanup();
+}
+
 void GraphicsEngine::world_to_screen(double world_x, double world_y, float &screen_x, float &screen_y)
 {
   screen_x = static_cast<float>(world_x * m_meters_to_pixels);
@@ -87,4 +92,11 @@ void GraphicsEngine::render(const std::vector<Object> &objects)
   }
 
   SDL_RenderPresent(m_renderer);
+}
+
+void GraphicsEngine::cleanup()
+{
+  SDL_DestroyRenderer(m_renderer);
+  SDL_DestroyWindow(m_window);
+  SDL_Quit();
 }

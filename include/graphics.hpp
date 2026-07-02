@@ -21,4 +21,6 @@ public:
   void handle_events(bool &running);
   void render(const std::vector<Object> &objects);
   void cleanup();
+
+  ~GraphicsEngine() noexcept;
 };
