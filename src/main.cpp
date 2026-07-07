@@ -220,6 +220,52 @@ auto example_bouncing_ball(void) -> void
   instance.run();
 }
 
+// 11. Simple Pendulum Simulation (Stable Constraint Verification)
+auto example_pendulum(void) -> void
+{
+  Object bob;
+  bob.mass = 1.0;
+
+  double pivot_x = max_x * 0.5;
+  double pivot_y = max_y * 0.75;
+  double length = 12.0; // Increased length for a cleaner swing arc
+
+  // Start at an angle (e.g., 45 degrees relative to vertical)
+  double initial_angle = 45.0 * (M_PI / 180.0);
+  bob.position = Vector(pivot_x + length * std::sin(initial_angle),
+                        pivot_y - length * std::cos(initial_angle));
+  bob.velocity = Vector(0.0, 0.0);
+
+  bob.add_gravity();
+
+  // Dynamic constraint lambda that counters stretching frame-by-frame
+  bob.add_force(
+      Vector(0, 0),
+      [pivot_x, pivot_y, length](Object &o) -> bool
+      {
+        Vector pivot(pivot_x, pivot_y);
+        Vector to_bob = o.position - pivot;
+        double current_dist = std::sqrt(to_bob.x * to_bob.x + to_bob.y * to_bob.y);
+
+        if (current_dist > 0.001)
+        {
+          Vector radial_dir = to_bob / current_dist;
+
+          o.position = pivot + radial_dir * length;
+
+          double radial_vel_mag = o.velocity * radial_dir;
+          if (radial_vel_mag > 0.0 || radial_vel_mag < 0.0)
+          {
+            o.velocity -= radial_dir * radial_vel_mag;
+          }
+        }
+        return false;
+      });
+
+  instance.add_object(bob);
+  instance.run();
+}
+
 int main(int argc, char *argv[])
 {
   if (argc != 2)
@@ -236,11 +282,12 @@ int main(int argc, char *argv[])
     std::cerr << "  8: Multi-Stage Fountain" << std::endl;
     std::cerr << "  9: Uniform Circular Motion Simulation" << std::endl;
     std::cerr << " 10: Bouncing Ball (Bounce-Back)" << std::endl;
+    std::cerr << " 11: Simple Pendulum Simulation" << std::endl;
 
     return 1;
   }
 
-  const std::array<std::function<void(void)>, 10> examples = {
+  const std::array<std::function<void(void)>, 11> examples = {
       example_constant_acceleration,
       example_braking_friction,
       example_parabolic_arc,
@@ -251,6 +298,7 @@ int main(int argc, char *argv[])
       example_fountain,
       example_circular_motion,
       example_bouncing_ball,
+      example_pendulum,
   };
 
   size_t exampleToRun = std::stoi(argv[1]);
